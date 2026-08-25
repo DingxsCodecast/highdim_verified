@@ -1,0 +1,2 @@
+dimension,enumerated_vertices,actual_neighbors,n_minus_one_neighbors,neighbor_excess,possible_n_minus_one_selections,first_step_count_matches,witness_passed
+4,6,4,3,1,4,0,1

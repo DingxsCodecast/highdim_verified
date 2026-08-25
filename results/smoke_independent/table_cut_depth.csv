@@ -1,0 +1,3 @@
+n,q,eta,alpha,rays,cells,max_blackbox_relative_depth_error,mean_blackbox_relative_depth_error,max_blackbox_level_residual,blackbox_function_evaluations,max_cut_recovery_error,global_cells,global_preserved,incumbent_on_boundary,D_min_min,D_mean_mean,D_geo_geomean,mean_log_volume_multiplier,blackbox_seconds,cut_assembly_seconds,tol_cut,tol_cone
+4,2,0.5,-0.5,7,4,2.84893100274164e-14,1.3954061632264e-14,9.9475983006414e-14,258,1.19883379042136e-16,4,1,1,1.75,1.97069409625118,1.95730573639706,3.35784451646264,0.0082924,0.0168881,1e-09,1e-09
+6,3,0.5,-0.5,21,66,2.68760542513944e-14,1.36528175182659e-14,9.41469124882133e-14,931,2.50931696175241e-16,24,1,1,1.75,1.97636584904003,1.96815235624531,4.73966648697397,0.0121319,0.0240733,1e-09,1e-09

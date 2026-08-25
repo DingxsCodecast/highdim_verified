@@ -1,0 +1,13 @@
+mode,n,q,orientation,seeds,median_seconds,maximum_seconds,all_passed
+structural,4,2,HH,5,0.0117918,0.046871,1
+structural,20,2,HH,5,0.0075521,0.0100688,1
+structural,100,2,HH,5,0.093348,0.0934435,1
+structural,500,2,HH,5,0.5673249,0.5847607,1
+structural,20,3,HH,5,0.0203379,0.0234075,1
+structural,20,3,QR,5,0.019319,0.0212412,1
+lifted,4,2,HH,5,0.0026521,0.0111803,1
+lifted,20,2,HH,5,0.0068758,0.0082439,1
+lifted,100,2,HH,5,0.0739698,0.0773548,1
+lifted,500,2,HH,5,0.1242712,0.148824,1
+lifted,20,3,HH,5,0.0184549,0.0192243,1
+lifted,20,3,QR,5,0.0185506,0.0190126,1

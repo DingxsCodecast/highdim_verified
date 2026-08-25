@@ -1,0 +1,4 @@
+n,q,sampled_rays,true_degree,simple_degree,deficit,baseline_recall,oracle_exact,baseline_exact,oracle_mean_seconds,baseline_mean_seconds,lifted_old_ray_degree,lifted_z_ray_degree
+4,2,6,4,3,1,0.75,1,0,0.00476401666666667,0.00174778333333333,5,6
+8,3,50,15,7,8,0.466666666666667,1,0,6.4884e-05,7.4312e-05,16,56
+10,5,50,25,9,16,0.36,1,0,7.4836e-05,7.6124e-05,26,252

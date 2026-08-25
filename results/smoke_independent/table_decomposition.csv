@@ -1,0 +1,3 @@
+n,q,input_rays,cells,all_simplicial,coverage_rate,volume_sum,analytic_volume,volume_relative_error,discarded_rank_deficient,seconds
+4,2,6,4,1,1,0.666666666666667,0.666666666666667,0,0,0.0498504
+6,3,20,66,1,1,0.55,0.55,2.01858731750028e-16,0,0.0178995

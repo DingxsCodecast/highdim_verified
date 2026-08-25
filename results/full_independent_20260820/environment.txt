@@ -1,0 +1,9 @@
+matlab_version: 24.2.0.2712019 (R2024b)
+matlab_release: 2024b
+computer: PCWIN64
+matlab_numcores: 8
+parallel_pool: none
+gpu_count: 0
+cpu: {"Name":"Intel(R) Core(TM) i7-9700 CPU @ 3.00GHz","Logical":"8"}
+ram: {"TotalPhysicalMemory":34131005440}
+windows: {"Edition":"Education","DisplayVersion":"25H2","Build":"26200.9168"}

@@ -1,0 +1,3 @@
+n,q,inequalities,candidate_bases,hrep_vertices,expected_vertices,vertex_sets_match,max_vertex_error,hrep_edges,expected_edges,edge_sets_match,minimum_degree,maximum_degree,expected_degree,enumeration_seconds,adjacency_seconds
+4,2,8,56,6,6,1,0,12,12,1,4,4,4,0.0249539,0.0110303
+6,3,12,792,20,20,1,0,90,90,1,9,9,9,0.0114837,0.0041185

@@ -1,0 +1,3 @@
+mode,n,q,orientation,seeds,median_seconds,maximum_seconds,all_passed
+structural,4,2,HH,2,0.04190605,0.0711103,1
+lifted,4,2,HH,2,0.00558875,0.0083322,1

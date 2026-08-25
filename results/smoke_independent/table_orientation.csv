@@ -1,0 +1,4 @@
+n,q,seed,orientation,cells,decomposition_passed,instance_passed,max_blackbox_relative_depth_error,max_blackbox_level_residual,max_cut_recovery_error,global_preserved,generation_seconds,blackbox_seconds,cut_assembly_seconds,max_transformed_boundary_residual
+4,2,1,NONE,4,1,1,2.17539052777624e-14,7.63833440942108e-14,2.08911855495877e-16,1,0.0098536,0.003832,0.0046431,0
+4,2,1,HH,4,1,1,2.17539052777624e-14,7.8159700933611e-14,3.80647894157197e-16,1,0.058767,0.0052936,0.0031536,0
+4,2,1,QR,4,1,1,2.17539052777624e-14,7.63833440942108e-14,4.17823710991754e-16,1,0.0086911,0.0037666,0.0015316,1.33226762955019e-15
