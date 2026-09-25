@@ -302,16 +302,15 @@ try
 catch
     environment.gpu_count=0;
 end
-[~,environment.cpu]=system(['powershell -NoProfile -Command "$p=Get-ItemProperty ', ...
-    '''HKLM:\HARDWARE\DESCRIPTION\System\CentralProcessor\0''; ', ...
-    '[pscustomobject]@{Name=$p.ProcessorNameString;Logical=$env:NUMBER_OF_PROCESSORS}|ConvertTo-Json -Compress"']);
-[~,environment.ram]=system(['powershell -NoProfile -Command "Add-Type -AssemblyName Microsoft.VisualBasic; ', ...
-    '[pscustomobject]@{TotalPhysicalMemory=[Microsoft.VisualBasic.Devices.ComputerInfo]::new().TotalPhysicalMemory}|ConvertTo-Json -Compress"']);
-[~,environment.windows]=system(['powershell -NoProfile -Command "$p=Get-ItemProperty ', ...
-    '''HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion''; ', ...
-    '[pscustomobject]@{Edition=$p.EditionID;DisplayVersion=$p.DisplayVersion;Build=(''', ...
-    '''+$p.CurrentBuild+''.''+$p.UBR)}|ConvertTo-Json -Compress"']);
-environment.cpu=strtrim(environment.cpu); environment.ram=strtrim(environment.ram); environment.windows=strtrim(environment.windows);
+environment.cpu=strtrim(getenv('PROCESSOR_IDENTIFIER'));
+environment.logical_processors=strtrim(getenv('NUMBER_OF_PROCESSORS'));
+environment.windows=strtrim(getenv('OS'));
+try
+    [~,system_memory]=memory;
+    environment.ram_bytes=system_memory.PhysicalMemory.Total;
+catch
+    environment.ram_bytes=NaN;
+end
 end
 
 function write_environment(file_name,environment)

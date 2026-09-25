@@ -1,16 +1,46 @@
-# 可验证的高维退化 DBLP 基准（structural + lifted）
+# Verifiable High-Dimensional Degenerate DBLP Benchmarks
 
-本目录与论文 `highdim_dblp_generator_lifted_complete.tex` 的符号和坐标约定一致。它提供两个共享 `Delta(n,q)` 几何的模式。
+This archive accompanies the article **"Certified High-Dimensional Testbeds for Degenerate Disjoint Bilinear Optimization"**, prepared for submission to *Journal of Global Optimization*.
 
-- Structural：`X_(0,q)` 是 `Delta(n,q)` 的棱锥，退化 apex 是唯一全局最优解，适合邻接与几何验证。
-- Lifted：`Xtilde_(0,q)=X_(0,q) x [0,1]`，lifted apex 是严格、非全局 PGM；另有已知唯一全局最优解、指定值 `alpha` 的可行 incumbent 和每条 incident ray 的闭式最大 multiplier，适合 decomposition / polar-cut 实验。
+Authors: Xi Chen, Xiuming Li, Xiangqi Tai, and Xiaosong Ding  
+Corresponding author: Xiaosong Ding, International Business School, Beijing Foreign Studies University, Beijing, China  
+Email: xiaosong.ding@hotmail.com
 
-合法参数为 `n>=4`、`2<=q<=n-2`。lifted 模式还要求 `0<eta<2`、`-1<alpha<0`。
+The code provides two benchmark modes built on the same hypersimplex geometry, `Delta(n,q)`:
 
-## 1. Structural 模式
+- **Structural mode:** `X_(0,q)` is a pyramid over `Delta(n,q)`. Its degenerate apex is the unique global optimizer. This mode is intended for neighborhood and geometric verification.
+- **Lifted mode:** `Xtilde_(0,q) = X_(0,q) x [0,1]`. Its lifted apex is a strict non-global pseudo-global minimizer (PGM), while a different vertex is the known unique global optimizer. The instance also provides a feasible incumbent with prescribed value `alpha` and closed-form maximal multipliers for all incident rays. This mode is intended for decomposition and polar-cut experiments.
+
+Valid parameters are `n >= 4` and `2 <= q <= n-2`. Lifted instances additionally require `0 < eta < 2` and `-1 < alpha < 0`.
+
+## 1. Extract Online Resource 1
+
+Extract `Online_Resource_1_highdim_verified.zip` so that the
+`highdim_verified` directory and this README remain together. For a MATLAB
+script stored in that directory, use the directory-relative setup below:
 
 ```matlab
-addpath('E:\Seafile\Warehouse\Submission\WaitingList\Generator\cpm_codes\generator\highdim_verified');
+repo = fileparts(mfilename('fullpath'));
+addpath(repo);
+```
+
+No machine-specific absolute path is required.
+
+## 2. Quick start
+
+Run both benchmark modes and a reference cut example:
+
+```matlab
+repo = fileparts(mfilename('fullpath'));
+addpath(repo);
+example_generate
+```
+
+### Structural mode
+
+```matlab
+repo = fileparts(mfilename('fullpath'));
+addpath(repo);
 
 S = generate_highdim_dblp(20, ...
     'Q', 3, ...
@@ -24,16 +54,19 @@ disp(S.validation.message)
 disp(S.metadata)
 ```
 
-兼容原求解器位置输出约定：
+The compatibility wrapper for the original solver interface is:
 
 ```matlab
 [Q,A,B,rhs_A,rhs_B,c,d,fstar,xstar,ystar,certificate,instance] = ...
     highdim_generator(20,'Q',3,'Seed',20260820);
 ```
 
-## 2. Lifted 模式
+### Lifted mode
 
 ```matlab
+repo = fileparts(mfilename('fullpath'));
+addpath(repo);
+
 L = generate_lifted_highdim_dblp(8, ...
     'Q', 3, ...
     'Eta', 0.5, ...
@@ -48,9 +81,9 @@ fprintf('Global value    = %.16g\n',L.minimum);
 disp(L.certificate.Sstar)
 ```
 
-在 `Orientation='none'` 时不应用缩放、旋转或平移，因此 source 值严格对应论文的 `0, alpha, -1`。HH/QR 模式中目标函数整体增加保存于 `L.certificate.objective_offset` 的常数；三者的差值和 canonical ray multiplier 不变。
+With `Orientation='none'`, no scaling, rotation, or translation is applied, so the source objective values are exactly `0`, `alpha`, and `-1`. In the `HH` and `QR` modes, the objective is shifted by the constant stored in `L.certificate.objective_offset`; objective differences and canonical ray multipliers are unchanged.
 
-canonical ray 使用“PGM 到相邻顶点的差向量”，不做单位长度归一化：
+Canonical rays use the vector from the PGM to an adjacent vertex, without unit-length normalization:
 
 ```matlab
 Slabel = L.certificate.Sstar;
@@ -59,21 +92,24 @@ lambdaS = lambda_oracle(L,Slabel);
 lambdaZ = lambda_oracle(L,'Z');
 ```
 
-## 3. 独立邻接、三角剖分和 cell cut
+## 3. Independent neighborhood, triangulation, and cell-cut checks
 
 ```matlab
-N = delta_neighbors([1 3 5],8);       % exact exchange-one-index oracle
-B = baseline_nminus1_neighbors([1 3 5],8); % 故意不完整的 n-1 diagnostic；不是 CDP
+repo = fileparts(mfilename('fullpath'));
+addpath(repo);
 
-% 不使用 subset/exchange 规则：从 H-description 枚举顶点，
-% 再用共同 active normals 的秩判定最小公共 face 的维数。
+N = delta_neighbors([1 3 5],8);                 % exact exchange-one-index oracle
+B = baseline_nminus1_neighbors([1 3 5],8);     % intentionally incomplete diagnostic, not CDP
+
+% Recover vertices and adjacencies from the H-description without using
+% subset labels or the exchange rule.
 [AH,bH] = hypersimplex_hrep(8,3);
 [VH,enumInfo] = enumerate_hrep_vertices(AH,bH);
 GH = hrep_adjacency_graph(AH,bH,VH);
 assert(enumInfo.number_vertices == nchoosek(8,3))
 assert(all(GH.degree == 3*(8-3)))
 
-% Delta(4,2) 上的过程级 neighbor-count witness。
+% Procedure-level neighbor-count witness on Delta(4,2).
 W = porembski_first_step_witness();
 assert(W.passed && W.actual_neighbors == 4 && W.n_minus_one_neighbors == 3)
 
@@ -85,65 +121,78 @@ L0 = generate_lifted_highdim_dblp(8,'Q',3, ...
     'Eta',0.5,'Alpha',-0.5,'Orientation','none');
 C = oracle_polar_cut(L0,T,1,'Coordinates','source');
 assert(C.passed)
-disp(C.lambda_oracle)
-disp(C.lambda_from_cut)
 
-% 独立主实验路径：将 reduced value 当作黑箱，用 bracket+bisection 求深度；
-% numerical_polar_cut 不调用 lambda_oracle。
+% Black-box bracket-and-bisection depths; numerical_polar_cut does not call
+% the closed-form lambda_oracle.
 D = generic_ray_depths(L0,T.labels,'Coordinates','source');
 CN = numerical_polar_cut(L0,T,1,D,'Coordinates','source');
 assert(D.passed && CN.passed)
 ```
 
-`reference_triangulation` 仅用于小规模：它物化全部 `nchoosek(n,q)` 条 hypersimplex rays，用 Qhull `QJ` 构造候选剖分，再独立检查每个 cell 的秩、Eulerian-number 解析体积和随机内部点覆盖。大规模实例应使用 ray sampling 或隐式算法。
+`reference_triangulation` is intended only for small and medium instances. It materializes all `nchoosek(n,q)` hypersimplex rays, asks Qhull with option `QJ` for a candidate triangulation, and independently checks cell ranks, Eulerian-number volume, and sampled-point coverage. Large instances should use certified ray sampling or an implicit ray/column-generation method.
 
-cell cut 是 branch-specific 的：`a'*(x-xbar)>=1` 必须和当前 simplicial cell 约束一起使用，不能把一个 cell 的 cut 不加区分地施加到其它 cell。
+A cell cut is branch-specific. The inequality `a'*(x-xbar) >= 1` must be combined with the current simplicial-cell constraint; a cut derived for one cell must not be imposed indiscriminately on other cells.
 
-## 4. 自动验证与测试
+## 4. Regression and stress tests
 
-```powershell
-matlab -batch "addpath('E:\Seafile\Warehouse\Submission\WaitingList\Generator\cpm_codes\generator\highdim_verified'); run_generator_tests"
-matlab -batch "addpath('E:\Seafile\Warehouse\Submission\WaitingList\Generator\cpm_codes\generator\highdim_verified'); stress_test_highdim_generator"
-```
-
-回归测试包含 15 项：一般 `q`、HH/QR、手工 smoke identities、exchange
-oracle、独立 H-description 顶点/邻接恢复、四维过程级 witness、黑箱射线延拓、
-解析体积覆盖、source/transformed numerical cut、RNG 可重复性、旧包装接口和
-非法输入。压力测试交叉 12 组 `(n,q)`、3 个 seed、2 种 orientation 和 2 个
-mode，共 144 个实例。
-
-## 5. 复现实验
+In an open MATLAB graphical session, add the extracted folder to the path and run:
 
 ```matlab
-out = fullfile(pwd,'results');
-run_lifted_experiments(out,'Profile','full');
+addpath('PATH_TO_EXTRACTED_HIGH_DIM_VERIFIED_FOLDER')
+run_generator_tests
+stress_test_highdim_generator
 ```
 
-输出：
+The regression suite contains 15 checks covering general `q`, HH/QR transformations, hand-verifiable identities, the exchange oracle, independent H-description vertex and adjacency recovery, the four-dimensional procedure witness, black-box ray extension, analytic volume coverage, source/transformed numerical cuts, RNG reproducibility, the compatibility wrapper, and invalid inputs.
 
-- `experiment_results.mat`：全部 MATLAB 结构和 raw metrics；
-- `table_neighborhood.csv`：exact oracle 与 `n-1` diagnostic；
-- `table_independent_neighborhood.csv`：从 H-description 独立恢复的顶点和边；
-- `table_procedure_witness.csv`：`Delta(4,2)` 上的实际 neighbor-count witness；
-- `table_decomposition.csv`：cell 数、秩、解析体积和覆盖；
-- `table_cut_depth.csv`：96 个组合的黑箱 bisection depth、解析误差和 numerical cut 有效性；
-- `table_orientation.csv`：none/HH/QR、3 seeds 的 affine robustness；
-- `table_generation.csv`：两类实例的 5-seed 生成加验证时间；
-- `table_pipeline.csv`：确定性 search-to-cut 流程；
-- `environment.txt`：CPU、内存、Windows、MATLAB、并行池和 GPU 状态。
+The stress suite crosses 12 `(n,q)` settings, 3 seeds, 2 orientations, and 2 modes, for 144 instances.
 
-正式实验容差为 `tol_feas=tol_cut=tol_cone=1e-9`；rank tolerance 使用 `max(size(R))*eps(norm(R,2))`。任何失败都应保留 subset/cell labels、cut 系数和相关残差，不能只记录 `status=fail`。
+## 5. Reproduce the reported experiments
 
-## 6. 主要文件
+```matlab
+repo = fileparts(mfilename('fullpath'));
+addpath(repo);
 
-- `generate_highdim_dblp.m` / `validate_highdim_dblp.m`：structural 模式；
-- `generate_lifted_highdim_dblp.m` / `validate_lifted_highdim_dblp.m`：lifted 模式；
-- `delta_neighbors.m`：邻接 oracle；
-- `hypersimplex_hrep.m` / `enumerate_hrep_vertices.m` /
-  `hrep_adjacency_graph.m`：独立 H-description 邻接验证；
-- `porembski_first_step_witness.m`：四维过程级 neighbor-count witness；
-- `reference_triangulation.m`：小规模 reference decomposition；
-- `lambda_oracle.m` / `oracle_polar_cut.m`：ray-depth 与 cell cut；
-- `generic_ray_extension.m` / `generic_ray_depths.m` /
-  `numerical_polar_cut.m`：不使用闭式深度的黑箱主实验路径；
-- `run_lifted_experiments.m`：论文数值实验与归档。
+out = fullfile(repo,'results');
+run_lifted_experiments(out,'Profile','full');
+run_jgo_solver_experiments(fullfile(repo,'results','jgo_202609'));
+```
+
+The archived outputs include:
+
+- `experiment_results.mat`: complete MATLAB structures and raw metrics;
+- `table_neighborhood.csv`: exact oracle versus the `n-1` diagnostic;
+- `table_independent_neighborhood.csv`: vertices and edges independently recovered from the H-description;
+- `table_procedure_witness.csv`: the actual neighbor-count witness on `Delta(4,2)`;
+- `table_decomposition.csv`: cell counts, ranks, analytic volume, and coverage;
+- `table_cut_depth.csv`: black-box bisection depths, analytic errors, and numerical-cut validity for 96 configurations;
+- `table_orientation.csv`: affine robustness for none/HH/QR orientations and three seeds;
+- `table_generation.csv`: generation and validation time over five seeds for both modes;
+- `table_pipeline.csv`: deterministic search-to-cut pipeline;
+- `environment.txt`: CPU, memory, operating system, MATLAB version, parallel-pool state, and GPU information.
+- `results/jgo_202609/solver_runs.csv`: 88 formula-blind alternating-LP and SQP runs;
+- `results/jgo_202609/solver_summary.csv`: solver outcomes by geometry and orientation;
+- `results/jgo_202609/hrep_global_checks.csv`: small-scale global solutions recovered only from the displayed H-descriptions.
+
+The reported experiment tolerances are `tol_feas = tol_cut = tol_cone = 1e-9`. Rank tests use `max(size(R))*eps(norm(R,2))`. Failure records retain subset or cell labels, cut coefficients, and the relevant residuals rather than only a status flag.
+
+## 6. Main files
+
+- `generate_highdim_dblp.m`, `validate_highdim_dblp.m`: structural mode;
+- `generate_lifted_highdim_dblp.m`, `validate_lifted_highdim_dblp.m`: lifted mode;
+- `delta_neighbors.m`: exact neighborhood oracle;
+- `hypersimplex_hrep.m`, `enumerate_hrep_vertices.m`, `hrep_adjacency_graph.m`: independent H-description verification;
+- `porembski_first_step_witness.m`: four-dimensional procedure-level neighbor-count witness;
+- `reference_triangulation.m`: small-instance reference decomposition;
+- `lambda_oracle.m`, `oracle_polar_cut.m`: analytic ray-depth and cell-cut oracles;
+- `generic_ray_extension.m`, `generic_ray_depths.m`, `numerical_polar_cut.m`: black-box numerical cut path;
+- `run_lifted_experiments.m`: numerical experiments and archived outputs.
+- `run_jgo_solver_experiments.m`: independent local-solver and small-scale global checks.
+
+## 7. Software requirements
+
+- MATLAB with Optimization Toolbox (`linprog` and `fmincon`) and `convhulln` available;
+- a MATLAB release supporting the language features used by the scripts;
+- sufficient memory to materialize all rays only for the selected small or medium reference instances.
+
+The large-dimensional generator and its analytic certificates do not require full ray materialization.

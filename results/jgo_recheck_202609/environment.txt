@@ -1,0 +1,10 @@
+matlab_version: 24.2.0.2712019 (R2024b)
+matlab_release: 2024b
+computer: PCWIN64
+matlab_numcores: 8
+parallel_pool: none
+gpu_count: 0
+cpu: Intel64 Family 6 Model 158 Stepping 13, GenuineIntel
+logical_processors: 8
+windows: Windows_NT
+ram_bytes: 34131005440

@@ -1,0 +1,4 @@
+n,q,orientation,seed,x_vertices,y_vertices,x_candidate_bases,y_candidate_bases,objective_error,solution_error,seconds
+4,2,none,11,14,2,462,2,0,0,0.0505208
+6,2,HH,12,32,2,6435,2,0,8.88178419700125e-16,0.0785431
+6,3,QR,13,42,2,6435,2,-7.105427357601e-15,1.77635683940025e-15,0.0820741

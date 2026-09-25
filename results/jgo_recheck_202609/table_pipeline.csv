@@ -1,0 +1,4 @@
+n,q,initial_y_source,PGM_reached,PGM_matches_planted,child_cells,all_cuts_valid,global_preserved,known_global_value_transformed,total_seconds
+4,2,0,1,1,4,1,1,-1.53755137949219,0.0099106
+6,2,0,1,1,26,1,1,-4.37402239279269,0.0224398
+6,3,0,1,1,66,1,1,6.69845131688559,0.0369294
