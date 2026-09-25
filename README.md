@@ -4,7 +4,7 @@ This archive accompanies the article **"Certified High-Dimensional Testbeds for 
 
 Authors: Xi Chen, Xiuming Li, Xiangqi Tai, and Xiaosong Ding  
 Corresponding author: Xiaosong Ding, International Business School, Beijing Foreign Studies University, Beijing, China  
-Email: xiaosong.ding@hotmail.com
+Email: dingxiaosong@bfsu.edu.cn
 
 The code provides two benchmark modes built on the same hypersimplex geometry, `Delta(n,q)`:
 
